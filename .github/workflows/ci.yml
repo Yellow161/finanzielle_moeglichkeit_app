@@ -1,4 +1,4 @@
-name: CI Build
+name: CI Build APK
 
 on:
   push:
@@ -28,7 +28,14 @@ jobs:
           cd app
           flutter pub get
 
-      - name: Analyze Flutter project
+      - name: Build APK (release)
         run: |
           cd app
-          flutter analyze || true
+          flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: app/build/app/outputs/flutter-apk/app-release.apk
+

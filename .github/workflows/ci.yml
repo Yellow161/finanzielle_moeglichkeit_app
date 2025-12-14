@@ -1,25 +1,26 @@
-name: CI & Build (Production Ready)
+name: CI Build
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Flutter
-  uses: subosito/flutter-action@v2
-  with:
-    channel: stable
-    cache: true
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
 
+      - name: Flutter version
+        run: flutter --version
 
-
-      - name: Build test
+      - name: CI test
         run: echo "CI läuft korrekt"

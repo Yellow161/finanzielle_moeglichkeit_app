@@ -1,4 +1,4 @@
-name: CI Build APK
+name: CI Build APK & AAB
 
 on:
   push:
@@ -28,23 +28,25 @@ jobs:
           cd app
           flutter pub get
 
-           - name: Install dependencies
-        run: |
-          cd app
-          flutter pub get
-
       - name: Decode keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > app/android/keystore.jks
 
+      - name: Build signed APK (release)
+        run: |
+          cd app
+          flutter build apk --release
+
       - name: Build signed AAB (release)
-        env:
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
           cd app
           flutter build appbundle --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: app/build/app/outputs/flutter-apk/app-release.apk
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
